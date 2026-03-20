@@ -197,5 +197,5 @@ dpi_engine/
 **Subham**  
 Passionate about software engineering, networks, and building robust backend infrastructure. 
 
-🔗 [Let's connect on LinkedIn](https://linkedin.com/in/your-profile)  
+🔗 [Let's connect on LinkedIn](https://www.linkedin.com/in/subham-tomar-b03b66363/)  
 🐙 [Check out my other projects on GitHub](https://github.com/subham1533)
