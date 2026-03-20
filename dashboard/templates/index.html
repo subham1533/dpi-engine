@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPI Engine Live Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        cardBg: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="p-6">
+    <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Header -->
+        <header class="flex justify-between items-center bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700">
+            <div>
+                <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">DPI Engine v2.0</h1>
+                <p class="text-slate-400 mt-1">Real-Time ML Traffic Analysis</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <span class="text-emerald-400 font-medium">Live Connection Active</span>
+            </div>
+        </header>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700">
+                <h3 class="text-slate-400 text-sm uppercase tracking-wider">Total Packets</h3>
+                <p id="stat-packets" class="text-3xl font-bold text-white mt-2">0</p>
+            </div>
+            <div class="bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700">
+                <h3 class="text-slate-400 text-sm uppercase tracking-wider">Transferred</h3>
+                <p id="stat-bytes" class="text-3xl font-bold text-blue-400 mt-2">0 B</p>
+            </div>
+            <div class="bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700">
+                <h3 class="text-slate-400 text-sm uppercase tracking-wider">Throughput</h3>
+                <p id="stat-speed" class="text-3xl font-bold text-emerald-400 mt-2">0 pkt/s</p>
+            </div>
+            <div class="bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700">
+                <h3 class="text-slate-400 text-sm uppercase tracking-wider">Dropped</h3>
+                <p id="stat-dropped" class="text-3xl font-bold text-red-500 mt-2">0</p>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700 flex flex-col items-center">
+                <h3 class="text-lg font-bold w-full mb-4">Application Breakdown</h3>
+                <div class="w-full h-64 relative">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700 flex flex-col items-center">
+                <h3 class="text-lg font-bold w-full mb-4">Traffic Action</h3>
+                <div class="w-full h-64 relative">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700">
+                <h3 class="text-lg font-bold mb-4">Detected SNIs</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="uppercase tracking-wider border-b border-slate-700 text-slate-400">
+                            <tr>
+                                <th class="pb-3 pr-4">Domain</th>
+                                <th class="pb-3 px-4">Classified App</th>
+                                <th class="pb-3 px-4 text-right">Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-snis" class="divide-y divide-slate-700">
+                            <!-- Rows inserted dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-cardBg p-6 rounded-2xl shadow-xl border border-slate-700">
+                <h3 class="text-lg font-bold mb-4 flex items-center">
+                    Security Alerts 
+                    <span class="ml-3 px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-xs font-bold">LIVE</span>
+                </h3>
+                <div id="alert-box" class="space-y-3 max-h-64 overflow-y-auto pr-2">
+                    <!-- Alerts inserted dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/charts.js"></script>
+</body>
+</html>
